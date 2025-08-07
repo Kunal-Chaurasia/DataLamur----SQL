@@ -1,0 +1,5 @@
+select count(distinct company_id) as duplicate_companies from (
+SELECT company_id, title, description, count(job_id) as job_count FROM job_listings
+group by company_id, title, description
+) as job_count_cte
+where job_count > 1;
