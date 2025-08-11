@@ -1,0 +1,5 @@
+SELECT app_id, round(100.0 * count(case when event_type = 'click' then 1 else null end) /
+count(case when event_type = 'impression' then 1 else null end), 2) as ctr_rate FROM events
+where timestamp >= '01/01/2022'
+and timestamp < '12/31/2022'
+group by app_id;
