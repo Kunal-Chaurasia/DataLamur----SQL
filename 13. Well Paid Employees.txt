@@ -1,0 +1,5 @@
+select higherthanmanager.employee_id, higherthanmanager.name as employee_name from 
+(SELECT mgr.employee_id as manager_id, mgr.name as manager_name, mgr.salary as manager_salary, employee.employee_id, employee.name, employee.salary FROM employee as mgr
+inner join employee
+on mgr.employee_id = employee.manager_id
+where employee.salary > mgr.salary) as higherthanmanager;
