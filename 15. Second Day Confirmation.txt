@@ -1,0 +1,5 @@
+SELECT distinct user_id FROM emails
+inner join texts
+on emails.email_id = texts.email_id
+where texts.action_date = emails.signup_date + interval '1 day'
+and texts.signup_action = 'Confirmed';
