@@ -1,0 +1,4 @@
+SELECT round(count(texts.email_id)::DECIMAL/count(distinct emails.email_id), 2) as activation_rate FROM emails
+left join texts
+on emails.email_id = texts.email_id
+and texts.signup_action = 'Confirmed';
