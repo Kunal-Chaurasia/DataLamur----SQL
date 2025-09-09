@@ -1,0 +1,9 @@
+select measurement_day, 
+sum(measurement_value) filter (where measurement_num % 2 != 0) as odd_sum,
+sum(measurement_value) filter (where measurement_num % 2 = 0) as even_sum
+from (
+SELECT cast(measurement_time as date) as measurement_day, measurement_value,
+row_number() over (PARTITION by cast(measurement_time as date) order by measurement_time) as measurement_num
+FROM measurements
+) as ranked_measurements
+group by measurement_day;
