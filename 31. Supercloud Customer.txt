@@ -1,0 +1,7 @@
+select customer_id from (
+SELECT customer_id, count(distinct products.product_category) as total_products FROM customer_contracts
+inner join products
+on customer_contracts.product_id = products.product_id
+group by customer_id
+) as customer_distinct_products
+where total_products = (select count(distinct product_category) from products);
