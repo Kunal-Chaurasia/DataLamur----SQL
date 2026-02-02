@@ -1,0 +1,9 @@
+with latest_transactions as (
+SELECT transaction_date, user_id, product_id,
+rank() over (partition by user_id order by transaction_date desc) as transaction_rank
+FROM user_transactions)
+select transaction_date, user_id, count(product_id) as purchase_count
+from latest_transactions
+where transaction_rank = 1
+group by transaction_date, user_id
+order by transaction_date;
