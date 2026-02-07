@@ -1,0 +1,3 @@
+SELECT round(100.0 * sum(case when caller.country_id <> receiver.country_id then 1 else null end)/count(*) ,1) as international_call_pct FROM phone_calls as calls
+left join phone_info as caller on calls.caller_id = caller.caller_id
+left join phone_info as receiver on calls.receiver_id = receiver.caller_id;
