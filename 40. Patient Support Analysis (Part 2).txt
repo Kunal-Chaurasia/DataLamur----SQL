@@ -1,0 +1,5 @@
+with uncategorized_callers as (
+SELECT count(case_id) as uncategorized_calls  FROM callers
+where call_category is null or call_category = 'n/a')
+select round((100.0 * uncategorized_calls / (select count(*) from callers)), 1) as uncategorized_calls_pct from uncategorized_callers
+;
