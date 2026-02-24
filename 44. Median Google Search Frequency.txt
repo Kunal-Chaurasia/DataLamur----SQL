@@ -1,0 +1,5 @@
+with searches_expanded as (
+SELECT searches FROM search_frequency
+group by searches, generate_series(1, num_users))
+
+select round(percentile_cont(0.50) within group(order by searches)::decimal, 1) as median from searches_expanded;
