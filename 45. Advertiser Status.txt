@@ -1,0 +1,12 @@
+SELECT 
+  COALESCE(advertiser.user_id, daily_pay.user_id) as user_id,
+  case 
+  when paid is null then 'CHURN'
+  when paid is not null and advertiser.status in ('NEW', 'EXISTING', 'RESURRECT') then 'EXISTING'
+  when paid is not null and advertiser.status = 'CHURN' then 'RESURRECT'
+  when paid is not null and advertiser.status is null then 'NEW'
+  END as new_status
+  FROM advertiser
+full outer join daily_pay
+  on advertiser.user_id = daily_pay.user_id
+order by user_id;
