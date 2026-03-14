@@ -1,0 +1,13 @@
+with turbotax_filing_cte as (
+SELECT filing_id, user_id, date_trunc('year', filing_date) as filing_year,
+lag(date_trunc('year', filing_date)) over (partition by user_id order by filing_date) as previous_year,
+lead(date_trunc('year', filing_date)) over (partition by user_id order by filing_date) as following_year
+FROM filed_taxes
+where lower(product) like 'turbotax%'
+)
+
+select user_id from turbotax_filing_cte
+where previous_year = filing_year - interval '1 year'
+  or following_year = filing_year + interval '1 year'
+group by user_id
+having count(filing_year) >=3;
