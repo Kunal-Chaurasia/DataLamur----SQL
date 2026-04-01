@@ -1,0 +1,8 @@
+with call_history as (select policy_holder_id, call_date as current_call, 
+lead(call_date) over (partition by policy_holder_id order by call_date) as next_call
+from callers)
+
+select count(distinct policy_holder_id) as policy_holder_count
+from call_history
+where current_call + interval '168 hours' >= next_call
+;
