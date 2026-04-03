@@ -1,0 +1,10 @@
+with long_calls as (
+SELECT extract(year from call_date) as yr, extract(month from call_date) as mt, count(case_id) as current_mts_calls,
+lag(count(case_id)) over (order by extract(month from call_date)) as prev_mth_calls
+FROM callers
+where call_duration_secs > 300
+group by yr, mt)
+
+select yr, mt, round(100.0 * (current_mts_calls - prev_mth_calls)/prev_mth_calls, 1) as long_calls_growth_pct
+from long_calls
+order by yr,mt;
