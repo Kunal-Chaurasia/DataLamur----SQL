@@ -1,0 +1,13 @@
+SELECT 
+  extract(month from current_month.login_date) as mth, 
+  count(distinct current_month.user_id) as reactivated_users 
+FROM user_logins as current_month
+
+where not exists (
+  select *
+  from user_logins as last_month
+  where current_month.user_id = last_month.user_id
+  and extract(month from last_month.login_date) = extract(month from current_month.login_date - '1 month' :: interval)
+)
+group by extract(month from current_month.login_date)
+order by mth;
