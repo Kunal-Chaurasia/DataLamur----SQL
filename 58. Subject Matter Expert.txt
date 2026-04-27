@@ -1,0 +1,5 @@
+select employee_id
+from employee_expertise
+group by employee_id
+having (sum(years_of_experience) >= 8 and count(distinct domain) = 1
+	or (sum(years_of_experience) >= 12 and count(distinct domain) = 2)
