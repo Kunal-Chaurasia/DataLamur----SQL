@@ -1,0 +1,5 @@
+select pp.profile_id from personal_profiles as pp
+join companies_pages as cp
+	on pp.employer_id = cp.company_id
+where pp.followers > cp.followers
+order by pp.profile_id:
