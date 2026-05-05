@@ -1,0 +1,6 @@
+select d.datacenter, (d.monthly_capacity - sum(f.monthly_demand)) as spare_capacity
+from datacenters as d
+join forecasted_demand as f
+	on d.datacenter_id = f.datacenter_id
+group by d.datacenter_id, d.monthly_capacity
+order by d.datacenter_id asc;
