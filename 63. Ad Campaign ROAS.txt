@@ -1,0 +1,5 @@
+select advertiser_id,
+	round(cast(sum(revenue)/sum(spend) as numeric), 2) as ROAS
+from ad_campaigns
+group by advertiser_id
+order by advertiser_id
