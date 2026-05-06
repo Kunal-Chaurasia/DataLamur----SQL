@@ -1,0 +1,14 @@
+with business_ratings as (
+select business_id, avg(review_stars) as average_rating
+from reviews
+group by business_id
+),
+top_rated as (
+select business_id,
+	case when average_rating >= 4 then 1 else 0 end as is_top_rated
+from business_ratings
+)
+
+select sum(is_top_rated) as no_of_top_rated,
+	100.0 * sum(is_top_rated)/count(*) as percentage_top_rated
+from top_rated
