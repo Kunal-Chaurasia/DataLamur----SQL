@@ -1,0 +1,6 @@
+select distinct p.product line, sum(amount) as total_revenue
+from transactions as t
+inner join product_info as p 
+	on t.product_id, p.product_id
+group by p.product_line
+order by total_revenue desc;	
