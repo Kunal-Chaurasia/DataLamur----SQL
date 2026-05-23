@@ -1,0 +1,3 @@
+select round(100*sum(case when event_type = 'webinar' then 1 else 0 end)/count(*))as webinar_pct
+from marketing_touches
+where date_trunc('month', event_date) = '04/01/2022';
