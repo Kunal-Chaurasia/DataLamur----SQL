@@ -1,0 +1,7 @@
+select deals.employee_id,
+	case
+		when sum(deals.deal_size) > quotas.quota then 'yes' else 'no' end as made_quota
+from deals
+inner join sales_quotas as quotas on deals.employee_id = quotas.employee_id
+group by deals.employee_id, quotas.quota
+order by deals.employee_id;
