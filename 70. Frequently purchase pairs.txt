@@ -1,0 +1,9 @@
+with paired_order as (
+select transaction_id, array_agg(cast(product_id as text) order by product_id) as combination
+from transactions
+group by transaction_id
+)
+
+select distinct combination from paired_order
+where array_length(combination, 1) > 1
+order by combination;
