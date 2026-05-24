@@ -1,0 +1,9 @@
+with grouped_data as (
+select product_id, category, name,
+	count(category) over (paartition by product_id) as group_id
+from products
+)
+
+select product_id, max(category) over (partition over product_id) as category, name
+from grouped_data
+order by product_id;
