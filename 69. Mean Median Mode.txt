@@ -1,0 +1,14 @@
+with MeanMedian as (
+select avg(cast(salary as decimal)) as mean,
+	percentile_cont(0.5) within group (order by salary) over() as median
+from emp_data
+),
+ModeCTE as (
+select top 1 salary as mode
+from emp_data
+group by salary
+order by count(*) desc
+)
+
+select distinct MeanMedian.mean, MeanMedian.median, ModeCTE.mode
+from MeanMedian, ModeCTE;
