@@ -1,0 +1,16 @@
+with in_the_moment_user as m (
+select distinct u.user_id
+from rides as r
+join users as u
+	on r.user_id = u.user_id and u.registration_date = r.ride_date)
+
+cte as (
+	select m.user_id, r.ride_date,
+		row_number() over (partition by m.user_id order by r.ride_date) as ride_row,
+		lag(r.ride_row) over (partition by m.user_id order by r.ride_date) as lag_date
+	from m
+	join r on m.user_id = r_user_id)
+	
+select round(avg(ride_date - lag_date), 2) as average_delay
+from cte
+where ride_row = 2
