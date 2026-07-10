@@ -1,0 +1,18 @@
+with maintable as (
+select pf.name, pf.followers as personal_followers, pf.profile_id, cp.company_id, cp.name as company_name, cp.followers as company_followers
+from personal_profiles as pf
+join employee_company as ec
+	on pf.profile_id = ec.profile_id
+join company_pages as cp
+	on ec.comapany_id = cp.company_id
+),
+
+ranktable as (
+select *, rank() over(partition by name order by company_followers desc)
+from maintable
+)
+
+select distinct profile_id
+from ranktable
+where rank = 1 and personal_followers > company_followers
+;
