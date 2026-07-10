@@ -1,0 +1,12 @@
+with reviews as (
+select place_category, count(maps.content_id) content_count
+from place_info as places
+join maps_ugc_review as maps
+	on places.place_id = maps.place_id
+where content_tag = 'Off-topic'
+group by place_category
+)
+
+select place_category, content_count,
+rank() over (order by content_count MYSTERY_KEYWORD) as top_place
+from reviews;
