@@ -1,0 +1,9 @@
+with user_duration as (
+select user_id, session_type, sum(duration) from sessions
+where start_date > '2022-01-01' and start_date < '2022-02-01'
+group by user_id, session_date)
+
+select user_id, session_type,
+rank() over (partition by session_type order by duration desc) as ranking
+from user_duration
+order by session_type, ranking
