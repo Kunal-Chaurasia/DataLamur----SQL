@@ -1,0 +1,7 @@
+with relationships as (
+select payer_id, recipient_id from payments
+intersect
+select recipient_id, payer_id from payments)
+
+select count(payer_id)/2 as unique_relationship
+from relationships;
