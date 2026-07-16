@@ -1,0 +1,7 @@
+with purchase_rank as (
+select user_id, spend, rank() over (partition by user_id order by transaction date asc) as row_num
+from user_transactions)
+
+select count(distinct user_id) as users 
+from purchase_rank
+where row_num = 1 and spend >= 50; 
