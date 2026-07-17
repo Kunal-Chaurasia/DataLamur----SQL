@@ -1,0 +1,7 @@
+select customer_id, sum(revenue)
+from adobe_transactions
+where product != 'photoshop'
+	and customer_id in (select customer_id from adobe_transaction
+		where product = 'photoshop')
+group by customer_id
+order by customer_id asc
