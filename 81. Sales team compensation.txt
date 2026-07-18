@@ -1,0 +1,14 @@
+with td as (
+select employee_id, sum(deal_size) as total_deal
+from deals
+group by employee_id
+)
+
+select employee_id,
+	case when td.total_deal <= ec.quota then (ec.base + (ec.compensation * td.total_deal))
+		else (ec.base + (ec.compensation * td.total-deal) + (td.total_deal - ec.quota) * ec.compensation * ec.accelerator)
+		end as total_compensation
+from td
+inner join employee_contract as ec
+	on td.employee_id = ec.employee_id
+order by total_compensation desc, td.employee_id asc;
