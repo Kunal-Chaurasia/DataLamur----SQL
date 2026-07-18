@@ -1,0 +1,13 @@
+with consulting_days as (
+select staffing.employee_id,
+	(consulting_engagements.end_date - consulting_engagements.start_date) as non_bench days,
+	count(staffs.job_id) as inclusive_days
+from staffing
+inner join consulting_engagements
+on staffing.job_id = consulting_engagements.job_id
+group by staffing.employee_id
+)
+
+select employee_id, (365 - sum(non_bench_days) - sum(inclusive_days)) as bench_days
+from consulting_days
+group by employee_id
