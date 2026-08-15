@@ -1,0 +1,18 @@
+with segment as (
+	select customer_id, 
+		case when employee_count < 100 then 'smb'
+			when employee_count between 100 and 999 then 'mid'
+			else 'seg'
+	from customers
+),
+
+final_deal_size as (
+	select segment.seg, sum(contracts.num_seats*contracts.yearly_seat_cost) / count(distinct segment.customer_id) as revenue_per_deal
+	from segment
+	join contracts on segment.customer_id = contracts.customer_id
+	group by segmentt.seg)
+	
+	select sum(revenue_per_deal) filter (where seg = 'smb') as smb_avg,
+		sum(revenue_per_deal) filter (where seg = 'mid') as mid_avg,
+		sum(revenue_per_deal) filter (where seg = 'enterprise') as enterprise_avg
+	from final_deal_size;
