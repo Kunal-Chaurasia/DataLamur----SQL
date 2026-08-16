@@ -1,0 +1,4 @@
+select order_date, product_type,
+	sum(quantity) over (partition by product_type order by order_date asc) as cumalative_purchases
+from total_trans
+order by 1
