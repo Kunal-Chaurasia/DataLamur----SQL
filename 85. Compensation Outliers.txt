@@ -1,0 +1,13 @@
+with payout as (
+select employee_id, salary, title,
+	(avg(salary) over (partition by title)) * 2 as double_average,
+	(avg(salary) over (partition by title)) / 2 as half_average
+from employee_pay
+)
+
+select employee_id, salary,
+	case when salary > double_average then 'Overpaid'
+	when salary < half_average then 'Underpaid'
+	end as outlier_status
+from payout
+where salary > double_average or salary < half_average
