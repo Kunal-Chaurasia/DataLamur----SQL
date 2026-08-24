@@ -1,0 +1,24 @@
+with add_month as (
+select *, date_tunc(month, created_at) as month
+from sf_transactions
+),
+
+with cte_monthly as (
+select month, sum(value) as monthly_value
+from add_month
+group by month
+),
+
+with cte_lagged as (
+select *, lag(value_sum, 1) over (partition by null order by month) as prev_month_value
+from cte_monthly
+),
+
+with monthly_change as (
+select *, Round(((monthly_value - prev_month_value)/prev_month_value) * 100,2) as percentage_change
+from cte_lagged
+)
+
+select to_char(created_at_month, 'YYYY_MM') month_year, percentage_change
+from monthly_change
+order by 1
