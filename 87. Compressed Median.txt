@@ -1,0 +1,7 @@
+with count_item as (
+select item_count from items_per_order
+group by item_count, generate_series(1, order_occurances)
+)
+
+select round(percentile_cont(0.50) within group (order by item_count)::decimal, 1) as median
+from count_item
