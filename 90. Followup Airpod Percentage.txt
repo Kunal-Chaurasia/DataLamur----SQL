@@ -1,0 +1,18 @@
+with lag_product as (
+select customer_id, product_name,
+	lag(product_name) over (partition by customer_id order by transaction_timestamp) as prev_prod
+from transactions
+group by customer_id, product_name, transaction_timestamp
+),
+
+interested_users as (
+select customer_id as airpods_iphones_buyers
+from lag_products
+where lower(prev_prod) = 'iphone' and lower(product_name) = 'airpods'
+)
+
+select round(count(distinct iu.airpods_iphones_buyers)::decimal
+	/ count(distinct transactions.customer_id)::decimal * 100.0)
+from transactions
+left join interested_users as iu
+	iu.airpods_iphones_buyers = transactions.customer_id
