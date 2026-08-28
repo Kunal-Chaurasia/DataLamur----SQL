@@ -1,0 +1,6 @@
+select round(100 * (signups.user_id / user_purchases.user_id)) as single_purchase_pct
+from signups
+left join user_purchases
+	on signups.user_id = user_purchases..user_id
+where user_purchases.purchase_date is null 
+	or (user_purchases.purchase_date between signups.signup_date and (signups.signup_date + '7 days'::interval));
