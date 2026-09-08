@@ -1,0 +1,12 @@
+with daily_balances as (
+select 
+	date_trunc('day', transaction_date) as transaction_day,
+	date_trunc('month', transaction_date) as transaction_month,
+	sum(case when type = 'deposit' then amount when type = 'withdrawal' then -amount end) as balance
+from transactions
+group by date_trunc('day', transaction_date), date_trunc('month', transaction_date)
+)
+
+select transaction_day, sum(balance) over (partition by tranasction_month order by transaction_day) as balance
+from daily_balances
+order by transaction_day;
