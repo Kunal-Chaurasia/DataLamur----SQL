@@ -1,0 +1,39 @@
+with two_way_friendship as (
+select user_id, friend_id
+from friendship
+union all
+select friend_id, user_id
+from friendship
+),
+page_view_by_friends as (
+select two_way_friendship.user_id, two_way_friendship.friend_id, page_id as friend_pgid
+from two_way_friendship
+join page_following 
+	on two_way_friendship.friend_id = page_following.user_id
+order by user_id
+),
+top_page_view_by_friend as (
+select user_id, friend_pgid, count(friend_pgid) as count_pgid,
+	rank() over (partition by user_id order by count(friend_pgid) desc) as rank1
+from page_view_by_friends
+group by user_id, friend_pgid
+),
+page_view_by_user as (
+select distinct two_way_friendship.user_id, page_id
+from two_way_friendship
+join page_following	
+	on two_way_friendship.user_id = page_following.user_id
+),
+top_pages as (
+select top_page_view_by_friend.user_id AS user_id1,  top_page_view_by_friend.freind_pgid, 
+	count_pid, rank1, page_view_by_user.user_id, page_view_by_user.page_id 
+from top_page_view_by_friend 
+left join page_view_by_user
+    on page_view_by_user.user_id = top_page_view_by_friend.user_id
+    and page_view_by_user.page_id = top_page_view_by_friend.freind_pgid
+where page_view_by_user.page_id IS NULL 
+    and rank1 = 1
+)
+select user_id1 as user_name, freind_pgid as recommended_page 
+from top_pages 
+order by user_id1, freind_pgid desc;
