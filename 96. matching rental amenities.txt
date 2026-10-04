@@ -1,0 +1,9 @@
+with normalized_amenitites as (
+select rental_id, array_agg(amnenities order by amenities) as amenity_list
+from rental_amenities
+group by rental_id
+),
+select count(*) as matching_airbnb_rentals
+from normalized_amenitties as r1
+inner join normalized_amenities as r2 on 
+	r1.amenity_list = r2.amenity_list and r1.rental_id < r2.rental_id;
