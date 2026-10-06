@@ -1,0 +1,11 @@
+with signup_weeks as (
+select user_id, signup_date, last_login,
+	extract(week from signup_date) - extract(week from date_trunc('month', signup_date)) + 1 as week_no
+from users
+where signup_date >= '2022-06-01' and signup_date <= '2022-06-30'
+)
+
+select week_no, 
+	round(100.0 * count(case when last_login - signup_date <= 28 then 1 end) / count(user_id), 2) as churn_rate
+from signup_weeks
+group by week_noorder by week_no;
