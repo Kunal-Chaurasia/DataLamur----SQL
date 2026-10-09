@@ -1,0 +1,18 @@
+with exclusive_employees as (
+select employee_id from employees
+join consulting_engagements as ce
+	on employees.engagement_id = ce.engagement_id
+group by employee_id
+having count(ce.client_name) = 1
+)
+
+select ce.client_name,
+	count(employees.employee_id) as total_staffed,
+	count(ee.employee_id) as exclusive_staffed
+from employees
+inner join consulting_engagements as ce
+	on employees.engagement_id = ce.engagement_id
+left join exclusive_employees as ee
+	on employees.employee_id = ee.employee_id
+group by ce.client_name
+order by ce.client_name
